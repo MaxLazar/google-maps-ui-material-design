@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Map</title>
+<link rel="stylesheet" href="screen.css">
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none;"><symbol id="delete" viewbox="0 0 24 24"><g class="i-delete"><path stroke="rgb(221,44,0)" stroke-width="2" d="M5 5l14 14z M5 19l14 -14"/></g></symbol></svg>
+
+<div class="main">
+
+    <div class="map-search js-map-search">
+        <form action="/" method="GET" class="search">
+            <div class="search__btn">
+                <button class="menu-btn js-menu-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><g class="i-menu" fill="rgb(97,97,97)"><path class="i-menu__top" d="M3 6h18v2h-18z"/><path class="i-menu__mid-1" d="M3 11h18v2h-18z"/><path class="i-menu__mid-2" d="M3 11h18v2h-18z"/><path class="i-menu__bottom" d="M3 16h18v2h-18z"/></g></svg>
+                </button>
+            </div>
+            <div class="search__input">
+                <input type="text" placeholder="Search address" class="js-search-input">
+            </div>
+            <div class="search__btn">
+                <button class="search-btn js-search-btn"><svg width="24" height="24" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g class="i-search" fill="rgb(97,97,97)" fill-rule="evenodd"><circle class="i-search__progress" cx="10" cy="10" r="1" fill="rgb(41,98,255)"/><path d="M10 17c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm0-2c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm9.5 6l1.5-1.5-4.5-4.5-1.5 1.5 4.5 4.5z"/></g></svg>
+                </button>
+            </div>
+        </form>
+        <ul class="suggestions suggestions_dropdown js-suggestions">
+        </ul>
+    </div>
+    <div class="main__map js-map">
+    </div>
+    <div class="map-menu js-menu">
+        <header class="map-menu__header map-menu__header_context_menu"><button class="close-btn js-close-btn"><svg width="24" height="24" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g class="i-close"><path stroke="rgb(255,255,255)" stroke-width="2" d="M5 5l14 14z M5 19l14 -14"/></g></svg>
+        </button></header>
+        <ul class="suggestions js-menu-list">
+            <li class="suggestions__item js-menu-item">
+            <div class="suggestions__title">
+                <span class="suggestions__match">New</span> York
+            </div>
+            <div class="suggestions__subtitle">
+                NY, United States
+            </div>
+            <button class="suggestions__delete"><svg width="24" height="24"><use xlink:href="#delete"></use></svg></button></li>
+            <li class="suggestions__item js-menu-item">
+            <div class="suggestions__title">
+                <span class="suggestions__match">New</span> Rochelle
+            </div>
+            <div class="suggestions__subtitle">
+                NY, United States
+            </div>
+            <button class="suggestions__delete"><svg width="24" height="24"><use xlink:href="#delete"></use></svg></button></li>
+            <li class="suggestions__item js-menu-item">
+            <div class="suggestions__title">
+                <span class="suggestions__match">New</span> York County
+            </div>
+            <div class="suggestions__subtitle">
+                NY, United States
+            </div>
+            <button class="suggestions__delete"><svg width="24" height="24"><use xlink:href="#delete"></use></svg></button></li>
+        </ul>
+    </div>
+    <div class="map-menu map-menu_type_editor js-editor">
+        <header class="map-menu__header map-menu__header_context_editor"><button class="back-btn js-back-btn"><svg width="24" height="24" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g class="i-close"><path stroke="rgb(255,255,255)" stroke-width="2" d="M3 12.5l6 -6zM3 11.5l6 6zM3 12h16z"/></g></svg>
+        </button><span class="map-menu__title js-editor__title"></span></header>
+        <div class="input">
+            <input type="text" id="title" required class="input__field"><label for="title" class="input__placeholder">Title</label><span class="input__underline"></span>
+        </div>
+        <div class="input">
+            <input type="text" id="location" required class="input__field"><label for="location" class="input__placeholder">Location</label><span class="input__underline"></span>
+        </div>
+        <div class="input">
+            <textarea type="text" id="description" rows="1" required class="input__field"></textarea><label for="description" class="input__placeholder">Description</label><span class="input__underline"></span>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn_priority_primary"><span class="btn__label">Save</span></button><button class="btn btn_color_danger"><span class="btn__label">Delete</span></button>
+        </div>
+    </div>
+</div>
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+<script src="//maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<script src="sortable.min.js"></script>
+<script src="textarea-autosize.min.js"></script>
+<script src="script.js"></script>
+
+<script>function initialize() {
+  var mapOptions = {
+    zoom: 9,
+    center: new google.maps.LatLng(51, 33),
+    panControl: false,
+    mapTypeControl: true,
+    mapTypeControlOptions: {
+      style: google.maps.MapTypeControlStyle.DEFAULT
+    },
+    zoomControl: true,
+    zoomControlOptions: {
+      style: google.maps.ZoomControlStyle.SMALL,
+      position: google.maps.ControlPosition.RIGHT_BOTTOM
+    }
+  }
+  var map = new google.maps.Map($('.js-map')[0], mapOptions);
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+<script type="text/template" class="suggestions">
+    <% _.each( suggestions, function (v) { %>
+        <li class="suggestions__item js-suggestion">
+            <div class="suggestions__title js-suggestion-title">
+                <%- v.city %>
+            </div>
+            <div class="suggestions__subtitle">
+                <%- v.country %>
+            </div>
+        </li>
+        <% }); %>
+</script>
